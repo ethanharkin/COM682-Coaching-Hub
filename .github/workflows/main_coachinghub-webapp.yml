@@ -28,6 +28,15 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          VITE_GETDRILLS_URL: ${{ vars.VITE_GETDRILLS_URL }}
+          VITE_GETAGEGROUPS_URL: ${{ vars.VITE_GETAGEGROUPS_URL }}
+          VITE_SAVEFAV_URL: ${{ vars.VITE_SAVEFAV_URL }}
+          VITE_GETFAVS_URL: ${{ vars.VITE_GETFAVS_URL }}
+          VITE_CREATEDRILL_URL: ${{ vars.VITE_CREATEDRILL_URL }}
+          VITE_UPDATEDRILL_URL: ${{ vars.VITE_UPDATEDRILL_URL }}
+          VITE_UPLOAD_FUNCTION_URL: ${{ vars.VITE_UPLOAD_FUNCTION_URL }}
+
 
       - name: Azure login (OIDC)
         uses: azure/login@v2
@@ -41,3 +50,4 @@ jobs:
         with:
           app-name: coachinghub-webapp
           package: dist
+
