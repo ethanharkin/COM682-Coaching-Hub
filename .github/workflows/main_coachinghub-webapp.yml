@@ -1,18 +1,23 @@
-name: Build and deploy CoachingHub Web App
+name: Build and deploy to Azure Web App
 
 on:
   push:
     branches: [ "main" ]
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Use Node 20
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -24,17 +29,15 @@ jobs:
       - name: Build
         run: npm run build
 
-      # Upload dist as artifact
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
         with:
-          name: site
-          path: dist
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_60E1545550BB417C840B2401C4D767B4 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_7D1CC02465924090B14E123C2045AF93 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_BBA965D146074083BF716EE4F0A0E18C }}
 
-      # Deploy dist to Azure Web App
-      - name: Deploy to Azure Web App
+      - name: Deploy to Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: coachinghub-webapp
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: dist
